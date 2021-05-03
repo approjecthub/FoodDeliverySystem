@@ -1,0 +1,15 @@
+<header *ngIf="currentUser=='admin'">
+    <a routerLink="/admin/create"  routerLinkActive="active" 
+    [routerLinkActiveOptions]="{exact:true}" >Create</a>
+
+    <a  routerLink="/" routerLinkActive="active"
+    [routerLinkActiveOptions]="{exact:true}">All items</a>
+</header>
+
+<header *ngIf="currentUser=='user'">
+    <a  routerLink="/" routerLinkActive="active"
+    [routerLinkActiveOptions]="{exact:true}">Home</a>
+    <a  routerLink="/user/cart" routerLinkActive="active"
+    [routerLinkActiveOptions]="{exact:true}"><i class="fas fa-shopping-cart"></i>{{cartItemLen}}</a>
+
+</header>
