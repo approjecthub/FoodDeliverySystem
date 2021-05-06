@@ -82,7 +82,7 @@ export class EditItemsComponent implements OnInit {
    .subscribe(res=>{
      console.log(res)
      this.notification.showSuccess('Successfully Edited',`${this.createForm.value.name} is saved successfully`)
-     this.router.navigate(['/admin/display-items'])
+     this.router.navigate(['/'])
      this.createForm.reset()
  }, err=>{
    this.notification.showError("Editing Failed",`${this.createForm.value.name} was not saved`)
@@ -94,6 +94,6 @@ export class EditItemsComponent implements OnInit {
  }
 
  cancel(){
-   this.router.navigate(['/admin/display-items'])
+   this.router.navigate(['/'])
  }
 }

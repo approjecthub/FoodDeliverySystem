@@ -3,6 +3,7 @@ const router = express.Router();
 const Item = require('../models/item');
 const multer = require('multer')
 const path = require('path')
+const checkAuth = require('../middleware/check-auth')
 
 const MIME_type_mp = {
     'image/png':'png',
@@ -42,7 +43,9 @@ router.get('/:id',getItem, (req,res)=>{
     res.json(res.item)
 })
 
-router.post('/',multer({storage:storage}).single('image'), async(req,res)=>{
+router.post('/',checkAuth,multer({storage:storage}).single('image'), async(req,res)=>{
+    if(req.userdetails.userRole!="admin") 
+    return res.status(401).json({msg: "user do not have the right for this operation"})  
     
     const url = req.protocol+'://'+req.get('host')
     const item = new Item({
@@ -61,7 +64,9 @@ router.post('/',multer({storage:storage}).single('image'), async(req,res)=>{
     }
 })
 
-router.put('/:id', multer({storage:storage}).single('image'), async(req,res)=>{
+router.put('/:id',checkAuth, multer({storage:storage}).single('image'), async(req,res)=>{
+    if(req.userdetails.userRole!="admin") 
+    return res.status(401).json({msg: "user do not have the right for this operation"})  
     let imgurl
     if(typeof req.file==='undefined'){
         imgurl = req.body.imagePath
@@ -110,15 +115,17 @@ router.put('/:id', multer({storage:storage}).single('image'), async(req,res)=>{
 //     }
 // })
 
-// router.delete('/:id', getItem, async(req,res)=>{
-//    try{
-//     await res.item.remove()
-//     res.json({msg:'Deleted item'})
-//    } 
-//    catch(err){
-//     res.status(500).json({msg:err.message})
-//    }
-// })
+router.delete('/:id',checkAuth, getItem, async(req,res)=>{
+    if(req.userdetails.userRole!="admin") 
+    return res.status(401).json({msg: "user do not have the right for this operation"})  
+   try{
+    await res.item.remove()
+    res.json({msg:'Deleted item'})
+   } 
+   catch(err){
+    res.status(500).json({msg:err.message})
+   }
+})
 
 
 

@@ -15,7 +15,7 @@ db.once('open', ()=>console.log('Connected to Database'));
 app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Headers',
-    " X-Requested-With, Content-Type, Accept")
+    " X-Requested-With, Content-Type, Accept, authorization")
     res.setHeader('Access-Control-Allow-Methods',
     "GET, PUT, PATCH, DELETE, POST, OPTIONS")
     next()

@@ -12,6 +12,7 @@ import { AuthData } from './auth.mode';
 export class AuthService {
   private isAuthenticated: Boolean = false
   private currentUserRole: string = ''
+  private token:string = ''
   private authSubject = new Subject<{ currentUserRole: string, isAuthenticated: Boolean }>()
 
   constructor(private http: HttpClient, private notification: EcomNotificationService, private router:Router) { }
@@ -38,7 +39,6 @@ export class AuthService {
         this.notification.showError("signup failed", null)
       })
 
-
   }
 
   loginUser(loginForm: FormGroup) {
@@ -49,14 +49,15 @@ export class AuthService {
       role: loginForm.value.role
     }
 
-
     this.http.post<{token:string, duration:number, userid:string, role:string}>('http://127.0.0.1:3000/user/login', authData)
       .subscribe(response => {
         console.log(response)
+        this.token = response.token
         this.notification.showSuccess('user is successfully loggedin', null)
         loginForm.reset()
         this.currentUserRole = response.role
         this.isAuthenticated = true
+        
         this.authSubject.next({
           
           currentUserRole: this.currentUserRole,
@@ -72,11 +73,16 @@ export class AuthService {
   logoutUser(){
     this.currentUserRole = ''
     this.isAuthenticated = false
+    this.token = ''
     this.authSubject.next({
       currentUserRole: this.currentUserRole,
       isAuthenticated:this.isAuthenticated 
     })
-    this.notification.showSuccess('user is successfully loggedin', null)
+    this.notification.showSuccess('user is successfully loggedout', null)
     this.router.navigate(['/'])
+  }
+
+  getToken(){
+    return this.token
   }
 }

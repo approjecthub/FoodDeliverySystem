@@ -40,7 +40,7 @@ export class CreateItemsComponent  {
     .subscribe(res=>{
       console.log(res)
       this.notification.showSuccess('Successfully Created',`${this.createForm.value.name} is added successfully`)
-      this.router.navigate(['/admin/display-items'])
+      this.router.navigate(['/'])
       this.createForm.reset()
   }, err=>{
     this.notification.showError("Creation Failed",`${this.createForm.value.name} was not added`)

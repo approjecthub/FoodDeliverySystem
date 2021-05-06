@@ -39,9 +39,9 @@ router.post('/login', (req, res, next)=>{
         bcrypt.compare(req.body.password, user.password)
         .then(result=>{
             if(!result)return res.status(401).json({msg: 'authentication failed'})
-
+            console.log(currentUser.role);
             const token = jwt.sign(
-                {id:currentUser._id, role:currentUser._role},
+                {id:currentUser._id, role:currentUser.role},
                 'SECRET_key',
                 {'expiresIn':'1h'})
 

@@ -5,7 +5,7 @@ function authenticate(req, res, next){
         const token = req.headers.authorization.split(' ')[1]
 
         const decodedToken = jwt.verify(token, 'SECRET_key')
-
+        console.log(decodedToken, decodedToken.id);
         req.userdetails = {userid:decodedToken.id, userRole: decodedToken.role}
         next()
     }
