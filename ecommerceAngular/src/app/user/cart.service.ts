@@ -42,4 +42,12 @@ export class CartService {
     return [...this.cartItems]
   }
 
+  clearCart(){
+    this.cartItems = []
+    this.cart.next({
+      cartItems: [...this.cartItems], 
+      cartItemLength:this.cartItems.length
+     })
+  }
+
 }

@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChildren } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Item } from 'src/app/common/item.model';
+import { EcomNotificationService } from 'src/app/ecom-notification.service';
 import { CartService } from '../cart.service';
 
 @Component({
@@ -14,11 +16,17 @@ export class CartitemsComponent implements OnInit, OnDestroy, AfterViewInit {
   totalPrice:number = 0
   cartItems:Item[] = []
   cartSubscription: Subscription
-  constructor(private cartService: CartService,private ngZone: NgZone) { }
+  constructor(private cartService: CartService, private notificationService:EcomNotificationService, private router: Router) { }
   ngAfterViewInit(): void {
     setTimeout(()=>{
       this.calculateTotalPrice()
     },0)
+    this.qtyListDom.changes.subscribe(()=>{
+      // console.log('changed')
+      setTimeout(()=>{
+        this.calculateTotalPrice()
+      },0)
+    })
   }
   
   ngOnDestroy(): void {
@@ -42,8 +50,8 @@ export class CartitemsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   calculateTotalPrice(){
-    console.log(this.qtyListDom)
-    console.log(this.itemPriceListDom)
+    // console.log(this.qtyListDom)
+    // console.log(this.itemPriceListDom)
     this.totalPrice = 0
     let priceArr:number[] = []
     let qtyArr:number[] = []
@@ -57,5 +65,14 @@ export class CartitemsComponent implements OnInit, OnDestroy, AfterViewInit {
     for(let i=0; i<qtyArr.length;i++){
       this.totalPrice += qtyArr[i]*priceArr[i]
     }
+  }
+
+  checkout(){
+    this.cartService.clearCart()
+    setTimeout(()=>{
+      this.notificationService.showSuccess("Your order is submitted",null)
+      
+    },50)
+    this.router.navigate(['/'])
   }
 }
