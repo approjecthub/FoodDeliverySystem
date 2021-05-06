@@ -11,6 +11,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { EditItemsComponent } from './admin/edit-items/edit-items.component';
 import { CartitemsComponent } from './user/cartitems/cartitems.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import { LoginComponent } from './auth/login/login.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { CartitemsComponent } from './user/cartitems/cartitems.component';
     CreateItemsComponent,
     EditItemsComponent,
     CartitemsComponent,
+    SignupComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

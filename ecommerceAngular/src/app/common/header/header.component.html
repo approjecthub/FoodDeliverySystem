@@ -1,9 +1,22 @@
+<header *ngIf="!isAuth">
+    <a  routerLink="/" routerLinkActive="active"
+    [routerLinkActiveOptions]="{exact:true}">Home</a>
+    <div class="d-flex flex-row-reverse" style="width: 100%;">
+        <a  routerLink="/signup" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact:true}">Signup</a>
+        <a  routerLink="/login" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact:true}">Login</a>
+    </div>
+
+</header>
 <header *ngIf="currentUser=='admin'">
+    <a  routerLink="/" routerLinkActive="active"
+    [routerLinkActiveOptions]="{exact:true}">Home</a>
     <a routerLink="/admin/create"  routerLinkActive="active" 
     [routerLinkActiveOptions]="{exact:true}" >Create</a>
-
-    <a  routerLink="/" routerLinkActive="active"
-    [routerLinkActiveOptions]="{exact:true}">All items</a>
+    <div class="d-flex flex-row-reverse" style="width: 100%;">
+        <a  (click)="logout()">Logout</a>
+    </div>
 </header>
 
 <header *ngIf="currentUser=='user'">
@@ -12,4 +25,7 @@
     <a  routerLink="/user/cart" routerLinkActive="active"
     [routerLinkActiveOptions]="{exact:true}"><i class="fas fa-shopping-cart"></i>{{cartItemLen}}</a>
 
+    <div class="d-flex flex-row-reverse" style="width: 100%;">
+        <a  (click)="logout()">Logout</a>
+    </div>
 </header>

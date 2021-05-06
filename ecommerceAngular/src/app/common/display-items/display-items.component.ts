@@ -1,28 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { EcomNotificationService } from 'src/app/ecom-notification.service';
 import { Item } from '../item.model';
 import { ItemService } from '../../admin/items.service';
 import { CartService } from 'src/app/user/cart.service';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-display-items',
   templateUrl: './display-items.component.html',
   styleUrls: ['./display-items.component.css']
 })
-export class DisplayItemsComponent implements OnInit {
-  items:Item[]
+export class DisplayItemsComponent implements OnInit, OnDestroy {
   
+  items:Item[]
+  isAuth:Boolean = false
   showConfirmation:boolean = false
   itemId:string
   currentUser:string = "user"
-  constructor(private itemService:ItemService, public notification:EcomNotificationService, public router:Router, private cartService: CartService) { }
+  authSubscription:Subscription
+  itemSubscription:Subscription
+  constructor(private itemService:ItemService, public notification:EcomNotificationService, public router:Router, private cartService: CartService, private authService:AuthService) {
+    
+   }
+  ngOnDestroy(): void {
+    this.itemSubscription.unsubscribe()
+    this.authSubscription.unsubscribe()
+  }
 
   ngOnInit(): void {
-    this.itemService.getItems().
+    const {isAuthenticated,currentUserRole} = this.authService.getAuthdetails()
+    console.log(isAuthenticated,currentUserRole);
+    
+    this.isAuth = isAuthenticated
+    this.currentUser = currentUserRole
+
+    this.authSubscription = this.authService.getAuthSubject().subscribe(result=>{
+      this.isAuth = result.isAuthenticated
+      this.currentUser = result.currentUserRole
+    })
+    this.itemSubscription = this.itemService.getItems().
     subscribe(data=>{
       this.items = data.items
     })
+    
   }
 
   setShowConfirmation(){

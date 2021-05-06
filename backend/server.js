@@ -15,7 +15,7 @@ db.once('open', ()=>console.log('Connected to Database'));
 app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Headers',
-    "Origin, X-Requested-With, Content-Type, Accept")
+    " X-Requested-With, Content-Type, Accept")
     res.setHeader('Access-Control-Allow-Methods',
     "GET, PUT, PATCH, DELETE, POST, OPTIONS")
     next()
@@ -29,5 +29,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('routes'))
 const itemsRouter = require('./routes/items');
 app.use('/items', itemsRouter)
+const userRouter =  require('./routes/users')
+app.use('/user', userRouter)
 
 app.listen(3000, ()=>console.log('Server Started'));

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
 import { CartService } from 'src/app/user/cart.service';
 
 @Component({
@@ -8,21 +9,37 @@ import { CartService } from 'src/app/user/cart.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit,OnDestroy {
+  isAuth:Boolean = false
   cartItemLen:number
-  currentUser:string = "user"
+  currentUser:string = ""
   cartSubscription: Subscription
-  constructor(private cartService:CartService) { }
+  authSubscription:Subscription
+  constructor(private cartService:CartService, private authService: AuthService) { }
   ngOnDestroy(): void {
-    this.cartSubscription.unsubscribe()
+    if(this.cartSubscription)this.cartSubscription.unsubscribe()
+
+    this.authSubscription.unsubscribe()
   }
 
   ngOnInit(): void {
-    if(this.currentUser=="user"){
-      this.cartSubscription = this.cartService.getCartUpdate().
-      subscribe(result=>{
+    this.authSubscription = this.authService.getAuthSubject()
+    .subscribe(result=>{
+      this.currentUser = result.currentUserRole
+      this.isAuth = result.isAuthenticated
+      if(this.cartSubscription)this.cartSubscription.unsubscribe()
+
+      if (this.currentUser=="user"){
+
+        this.cartSubscription = this.cartService.getCartUpdate().
+        subscribe(result=>{
         this.cartItemLen = result.cartItemLength
       })
-    }
+      }
+    })
+
+  }
+  logout(){
+    this.authService.logoutUser()
   }
 
 }
