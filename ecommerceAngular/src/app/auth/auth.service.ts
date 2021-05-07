@@ -14,6 +14,7 @@ export class AuthService {
   private currentUserRole: string = ''
   private token:string = ''
   private authSubject = new Subject<{ currentUserRole: string, isAuthenticated: Boolean }>()
+  private authTimer
 
   constructor(private http: HttpClient, private notification: EcomNotificationService, private router:Router) { }
 
@@ -41,6 +42,39 @@ export class AuthService {
 
   }
 
+  autoAuthenticate(){
+    let expDate:any = localStorage.getItem('expirationDate')
+    if(!expDate) return 
+    expDate = new Date(expDate)
+    let now = new Date()
+    let interval = expDate.getTime() - now.getTime()
+    if (interval>0){
+      this.authTimer = setTimeout(()=>{
+        this.logoutUser()
+      }, interval)
+      this.token = localStorage.getItem('token')
+      this.currentUserRole = localStorage.getItem('currentUserRole')
+      this.isAuthenticated = true
+      this.authSubject.next({
+          
+        currentUserRole: this.currentUserRole,
+        isAuthenticated:this.isAuthenticated 
+      })
+      this.router.navigate(['/'])
+    }
+  }
+  saveAuthLS(token:string, currentUserRole:string, expirationDate:Date){
+    localStorage.setItem('token', token)
+    localStorage.setItem('currentUserRole', currentUserRole)
+    localStorage.setItem('expirationDate', expirationDate.toISOString())
+  }
+
+  removeAuthLS(){
+    localStorage.removeItem("token")
+        localStorage.removeItem("currentUserRole")
+        localStorage.removeItem("expirationDate")
+  }
+
   loginUser(loginForm: FormGroup) {
 
     const authData: AuthData = {
@@ -57,7 +91,11 @@ export class AuthService {
         loginForm.reset()
         this.currentUserRole = response.role
         this.isAuthenticated = true
-        
+        let expDate = new Date(new Date().getTime() + response.duration*1000)
+        this.authTimer = setTimeout(()=>{
+          this.logoutUser()
+        }, response.duration*1000)
+        this.saveAuthLS(this.token, this.currentUserRole, expDate)
         this.authSubject.next({
           
           currentUserRole: this.currentUserRole,
@@ -78,11 +116,14 @@ export class AuthService {
       currentUserRole: this.currentUserRole,
       isAuthenticated:this.isAuthenticated 
     })
+    this.removeAuthLS()
+    clearTimeout(this.authTimer)
     this.notification.showSuccess('user is successfully loggedout', null)
     this.router.navigate(['/'])
   }
 
   getToken(){
+    this.token = localStorage.getItem('token')
     return this.token
   }
 }

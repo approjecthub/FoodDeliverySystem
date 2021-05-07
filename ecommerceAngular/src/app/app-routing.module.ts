@@ -6,14 +6,15 @@ import { EditItemsComponent } from "./admin/edit-items/edit-items.component";
 import { CartitemsComponent } from "./user/cartitems/cartitems.component";
 import { SignupComponent } from "./auth/signup/signup.component";
 import { LoginComponent } from "./auth/login/login.component";
+import {AuthGuardAdmin, AuthGuardUser} from './auth/auth.guard'
 
 export const appRoutes:Routes=[
-    {path:'admin/create', component:CreateItemsComponent},
-    {path:'', component:DisplayItemsComponent},
-    {path:'admin/edit-item/:itemId', component:EditItemsComponent},
-    {path:'user/cart', component:CartitemsComponent},
+    {path:'admin/create', component:CreateItemsComponent, canActivate:[AuthGuardAdmin]},
+    {path:'admin/edit-item/:itemId', component:EditItemsComponent, canActivate:[AuthGuardAdmin]},
+    {path:'user/cart', component:CartitemsComponent, canActivate:[AuthGuardUser]},
     {path:'signup', component:SignupComponent},
-    {path:'login', component:LoginComponent}
+    {path:'login', component:LoginComponent},
+    {path:'', component:DisplayItemsComponent},
 ]
 
 @NgModule({

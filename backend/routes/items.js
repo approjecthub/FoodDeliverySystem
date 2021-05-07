@@ -44,6 +44,7 @@ router.get('/:id',getItem, (req,res)=>{
 })
 
 router.post('/',checkAuth,multer({storage:storage}).single('image'), async(req,res)=>{
+    console.log('post req');
     if(req.userdetails.userRole!="admin") 
     return res.status(401).json({msg: "user do not have the right for this operation"})  
     

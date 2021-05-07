@@ -21,23 +21,37 @@ export class HeaderComponent implements OnInit,OnDestroy {
     this.authSubscription.unsubscribe()
   }
 
+
   ngOnInit(): void {
+    const { isAuthenticated, currentUserRole}= this.authService.getAuthdetails()
+
+    this.currentUser = currentUserRole
+      this.isAuth = isAuthenticated
+
+      this.addCartSubscription();
+    
     this.authSubscription = this.authService.getAuthSubject()
     .subscribe(result=>{
       this.currentUser = result.currentUserRole
       this.isAuth = result.isAuthenticated
-      if(this.cartSubscription)this.cartSubscription.unsubscribe()
-
-      if (this.currentUser=="user"){
-
-        this.cartSubscription = this.cartService.getCartUpdate().
-        subscribe(result=>{
-        this.cartItemLen = result.cartItemLength
-      })
-      }
+      this.addCartSubscription()
     })
 
   }
+  private addCartSubscription() {
+    if (this.cartSubscription)
+      this.cartSubscription.unsubscribe();
+
+    if (this.currentUser == "user") {
+      console.log('inner subscription called');
+
+      this.cartSubscription = this.cartService.getCartUpdate().
+        subscribe(result => {
+          this.cartItemLen = result.cartItemLength;
+        });
+    }
+  }
+
   logout(){
     this.authService.logoutUser()
   }
