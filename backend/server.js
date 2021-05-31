@@ -31,5 +31,7 @@ const itemsRouter = require('./routes/items');
 app.use('/items', itemsRouter)
 const userRouter =  require('./routes/users')
 app.use('/user', userRouter)
+const shoppingRoute = require('./routes/userShopping')
+app.use('/shopping', shoppingRoute)
 
 app.listen(3000, ()=>console.log('Server Started'));

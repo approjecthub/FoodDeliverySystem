@@ -46,7 +46,7 @@ router.post('/login', (req, res, next)=>{
                 {'expiresIn':'1h'})
 
             res.status(200).json({token:token, duration:3600,
-                 userid: currentUser._id, role:currentUser.role})
+                 userid: currentUser._id,usermail:currentUser.email, role:currentUser.role})
 
 
         })

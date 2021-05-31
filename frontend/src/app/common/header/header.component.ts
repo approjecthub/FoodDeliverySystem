@@ -10,8 +10,9 @@ import { CartService } from 'src/app/user/cart.service';
 })
 export class HeaderComponent implements OnInit,OnDestroy {
   isAuth:Boolean = false
+  usermail:string = ''
   cartItemLen:number
-  currentUser:string = ""
+  currentUserRole:string = ""
   cartSubscription: Subscription
   authSubscription:Subscription
   constructor(private cartService:CartService, private authService: AuthService) { }
@@ -23,16 +24,17 @@ export class HeaderComponent implements OnInit,OnDestroy {
 
 
   ngOnInit(): void {
-    const { isAuthenticated, currentUserRole}= this.authService.getAuthdetails()
-
-    this.currentUser = currentUserRole
+    const { isAuthenticated,usermail, currentUserRole}= this.authService.getAuthdetails()
+    this.usermail = usermail
+    this.currentUserRole = currentUserRole
       this.isAuth = isAuthenticated
 
       this.addCartSubscription();
     
     this.authSubscription = this.authService.getAuthSubject()
     .subscribe(result=>{
-      this.currentUser = result.currentUserRole
+      this.usermail = result.usermail
+      this.currentUserRole = result.currentUserRole
       this.isAuth = result.isAuthenticated
       this.addCartSubscription()
     })
@@ -42,7 +44,7 @@ export class HeaderComponent implements OnInit,OnDestroy {
     if (this.cartSubscription)
       this.cartSubscription.unsubscribe();
 
-    if (this.currentUser == "user") {
+    if (this.currentUserRole == "user") {
       console.log('inner subscription called');
 
       this.cartSubscription = this.cartService.getCartUpdate().

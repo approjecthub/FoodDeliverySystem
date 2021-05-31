@@ -18,7 +18,7 @@ export class DisplayItemsComponent implements OnInit, OnDestroy {
   isAuth:Boolean = false
   showConfirmation:boolean = false
   itemId:string
-  currentUser:string = "user"
+  currentUserRole:string = "user"
   authSubscription:Subscription
   itemSubscription:Subscription
   constructor(private itemService:ItemService, public notification:EcomNotificationService, public router:Router, private cartService: CartService, private authService:AuthService) {
@@ -32,15 +32,16 @@ export class DisplayItemsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const {isAuthenticated,currentUserRole} = this.authService.getAuthdetails()
     console.log(isAuthenticated,currentUserRole);
-    
+    // this.items = this.itemService.itemsInitialize()
     this.isAuth = isAuthenticated
-    this.currentUser = currentUserRole
+    this.currentUserRole = currentUserRole
 
     this.authSubscription = this.authService.getAuthSubject().subscribe(result=>{
       this.isAuth = result.isAuthenticated
-      this.currentUser = result.currentUserRole
+      this.currentUserRole = result.currentUserRole
     })
-    this.itemSubscription = this.itemService.getItems().
+    this.itemService.getItems()
+    this.itemSubscription = this.itemService.getItemsSubject().
     subscribe(data=>{
       this.items = data.items
     })

@@ -9,12 +9,12 @@
           <!-- <h5 class="card-title">{{item.name}}</h5> -->
           <p class="card-text">{{item.description}}</p>
 
-              <div *ngIf="currentUser == 'admin' && isAuth">
+              <div *ngIf="currentUserRole == 'admin' && isAuth">
                 <button class="btn btn-primary mr-2" (click)="itemId=item.id;callEdit()" >Edit</button> 
                 <button class="btn btn-danger" (click)="itemId=item.id;setShowConfirmation()">Delete</button>
               </div>
 
-              <div *ngIf="currentUser == 'user' && isAuth">
+              <div *ngIf="currentUserRole == 'user' && isAuth">
                 <button class="btn btn-danger" (click)="addToCart(item)">Add to Cart</button>
               </div>
           

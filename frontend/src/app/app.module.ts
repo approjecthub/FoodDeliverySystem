@@ -14,6 +14,7 @@ import { CartitemsComponent } from './user/cartitems/cartitems.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { OrderHistoryComponent } from './user/order-history/order-history.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     CartitemsComponent,
     SignupComponent,
     LoginComponent,
+    OrderHistoryComponent,
   ],
   imports: [
     BrowserModule,

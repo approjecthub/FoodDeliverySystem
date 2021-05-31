@@ -7,11 +7,13 @@ import { CartitemsComponent } from "./user/cartitems/cartitems.component";
 import { SignupComponent } from "./auth/signup/signup.component";
 import { LoginComponent } from "./auth/login/login.component";
 import {AuthGuardAdmin, AuthGuardUser} from './auth/auth.guard'
+import { OrderHistoryComponent } from "./user/order-history/order-history.component";
 
 export const appRoutes:Routes=[
     {path:'admin/create', component:CreateItemsComponent, canActivate:[AuthGuardAdmin]},
     {path:'admin/edit-item/:itemId', component:EditItemsComponent, canActivate:[AuthGuardAdmin]},
     {path:'user/cart', component:CartitemsComponent, canActivate:[AuthGuardUser]},
+    {path:'user/shopping-history', component:OrderHistoryComponent, canActivate:[AuthGuardUser]},
     {path:'signup', component:SignupComponent},
     {path:'login', component:LoginComponent},
     {path:'', component:DisplayItemsComponent},

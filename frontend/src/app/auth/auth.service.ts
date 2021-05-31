@@ -12,14 +12,16 @@ import { AuthData } from './auth.mode';
 export class AuthService {
   private isAuthenticated: Boolean = false
   private currentUserRole: string = ''
+  private usermail:string = ''
+  private userid:string = ''
   private token:string = ''
-  private authSubject = new Subject<{ currentUserRole: string, isAuthenticated: Boolean }>()
+  private authSubject = new Subject<{userid:string,usermail:string, currentUserRole: string, isAuthenticated: Boolean }>()
   private authTimer
 
   constructor(private http: HttpClient, private notification: EcomNotificationService, private router:Router) { }
 
   getAuthdetails(){
-    return {isAuthenticated:this.isAuthenticated , currentUserRole:this.currentUserRole}
+    return {isAuthenticated:this.isAuthenticated ,userid: this.userid,usermail: this.usermail, currentUserRole:this.currentUserRole}
   }
 
   getAuthSubject(){
@@ -53,24 +55,31 @@ export class AuthService {
         this.logoutUser()
       }, interval)
       this.token = localStorage.getItem('token')
+      this.userid = localStorage.getItem('userid')
+      this.usermail = localStorage.getItem('usermail')
       this.currentUserRole = localStorage.getItem('currentUserRole')
       this.isAuthenticated = true
       this.authSubject.next({
-          
+        userid:this.userid,
+        usermail:this.usermail,
         currentUserRole: this.currentUserRole,
         isAuthenticated:this.isAuthenticated 
       })
       this.router.navigate(['/'])
     }
   }
-  saveAuthLS(token:string, currentUserRole:string, expirationDate:Date){
+  saveAuthLS(userid:string, token:string,usermail:string, currentUserRole:string, expirationDate:Date){
+    localStorage.setItem('userid', userid)
+    localStorage.setItem('usermail',usermail)
     localStorage.setItem('token', token)
     localStorage.setItem('currentUserRole', currentUserRole)
     localStorage.setItem('expirationDate', expirationDate.toISOString())
   }
 
   removeAuthLS(){
+    localStorage.removeItem("userid")
     localStorage.removeItem("token")
+    localStorage.removeItem("usermail")
         localStorage.removeItem("currentUserRole")
         localStorage.removeItem("expirationDate")
   }
@@ -83,21 +92,24 @@ export class AuthService {
       role: loginForm.value.role
     }
 
-    this.http.post<{token:string, duration:number, userid:string, role:string}>('http://127.0.0.1:3000/user/login', authData)
+    this.http.post<{token:string, duration:number, userid:string,usermail:string, role:string}>('http://127.0.0.1:3000/user/login', authData)
       .subscribe(response => {
         console.log(response)
         this.token = response.token
         this.notification.showSuccess('user is successfully loggedin', null)
         loginForm.reset()
+        this.userid = response.userid
+        this.usermail = response.usermail
         this.currentUserRole = response.role
         this.isAuthenticated = true
         let expDate = new Date(new Date().getTime() + response.duration*1000)
         this.authTimer = setTimeout(()=>{
           this.logoutUser()
         }, response.duration*1000)
-        this.saveAuthLS(this.token, this.currentUserRole, expDate)
+        this.saveAuthLS(this.userid, this.token,this.usermail, this.currentUserRole, expDate)
         this.authSubject.next({
-          
+          userid:this.userid,
+          usermail:this.usermail,
           currentUserRole: this.currentUserRole,
           isAuthenticated:this.isAuthenticated 
         })
@@ -109,10 +121,14 @@ export class AuthService {
   }
 
   logoutUser(){
+    this.userid = ''
+    this.usermail = ''
     this.currentUserRole = ''
     this.isAuthenticated = false
     this.token = ''
     this.authSubject.next({
+      userid:this.userid,
+      usermail:this.usermail,
       currentUserRole: this.currentUserRole,
       isAuthenticated:this.isAuthenticated 
     })
