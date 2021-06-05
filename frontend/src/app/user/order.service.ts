@@ -64,4 +64,22 @@ export class OrderService {
     })
     
   }
+
+  purchase(items:Item[], qtyOfEachItem:number[]){
+    const {userid} = this.authService.getAuthdetails()
+    // console.log(items);
+    // console.log(qtyOfEachItem);
+    const order = {"allitems":[], "userid":userid}
+    for(let i=0;i<items.length;i++){
+      order.allitems.push({"itemtaken": items[i].id, "qty":qtyOfEachItem[i]})
+    }
+
+    // console.log(order);
+    this.http.post<{totalamt:Number}>('http://127.0.0.1:3000/shopping/', order)
+    .subscribe(result=>{
+      console.log(result.totalamt);
+      
+    })
+    
+  }
 }

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Item } from 'src/app/common/item.model';
 import { EcomNotificationService } from 'src/app/ecom-notification.service';
 import { CartService } from '../cart.service';
+import { OrderService } from '../order.service';
 
 @Component({
   selector: 'app-cartitems',
@@ -15,8 +16,9 @@ export class CartitemsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren('itemPrice') itemPriceListDom
   totalPrice:number = 0
   cartItems:Item[] = []
+  quantity:number[] = []
   cartSubscription: Subscription
-  constructor(private cartService: CartService, private notificationService:EcomNotificationService, private router: Router) { }
+  constructor(private cartService: CartService, private notificationService:EcomNotificationService, private router: Router, private orderService:OrderService) { }
   ngAfterViewInit(): void {
     setTimeout(()=>{
       this.calculateTotalPrice()
@@ -65,12 +67,14 @@ export class CartitemsComponent implements OnInit, OnDestroy, AfterViewInit {
     for(let i=0; i<qtyArr.length;i++){
       this.totalPrice += qtyArr[i]*priceArr[i]
     }
+    this.quantity = [...qtyArr]
   }
 
   checkout(){
-    this.cartService.clearCart()
+    this.orderService.purchase([...this.cartItems],[...this.quantity])
     setTimeout(()=>{
       this.notificationService.showSuccess("Your order is submitted",null)
+      this.cartService.clearCart()
       
     },50)
     this.router.navigate(['/'])

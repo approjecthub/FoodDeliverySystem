@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit,OnDestroy {
       this.cartSubscription.unsubscribe();
 
     if (this.currentUserRole == "user") {
-      console.log('inner subscription called');
+      // console.log('inner subscription called');
 
       this.cartSubscription = this.cartService.getCartUpdate().
         subscribe(result => {

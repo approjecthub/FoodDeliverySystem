@@ -31,7 +31,7 @@ export class DisplayItemsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const {isAuthenticated,currentUserRole} = this.authService.getAuthdetails()
-    console.log(isAuthenticated,currentUserRole);
+    // console.log(isAuthenticated,currentUserRole);
     // this.items = this.itemService.itemsInitialize()
     this.isAuth = isAuthenticated
     this.currentUserRole = currentUserRole

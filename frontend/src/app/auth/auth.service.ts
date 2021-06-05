@@ -94,7 +94,7 @@ export class AuthService {
 
     this.http.post<{token:string, duration:number, userid:string,usermail:string, role:string}>('http://127.0.0.1:3000/user/login', authData)
       .subscribe(response => {
-        console.log(response)
+        // console.log(response)
         this.token = response.token
         this.notification.showSuccess('user is successfully loggedin', null)
         loginForm.reset()
